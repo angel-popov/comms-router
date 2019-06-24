@@ -8,7 +8,7 @@ RUN wget http://archive.apache.org/dist/maven/maven-3/3.5.4/binaries/apache-mave
 ENV PATH=$PATH:/usr/lib/mvn/bin
 
 WORKDIR /usr/src/
-COPY ../.. .
+COPY . .
 RUN mvn clean install
 from tomcat:10
 RUN echo 'export CATALINA_OPTS="$CATALINA_OPTS -Dhibernate.dialect=org.hibernate.dialect.MySQL57Dialect"'> bin/setenv.sh
