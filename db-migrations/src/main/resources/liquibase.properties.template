@@ -20,11 +20,11 @@ verbose=true
 # JDBC driver
 driver=com.mysql.jdbc.Driver
 # Database Url
-url=jdbc:mysql://localhost:3306/comms_router_core
+url=jdbc:mysql://$comms_router_host:3306/comms_router_core
 # Database username
-username=
+username=$comms_router
 # Database password
-password=
+password=$comms_password
 
 # Changelog file location
 changeLogFile=src/main/resources/db/changelog.yaml
@@ -35,6 +35,6 @@ outputChangeLogFile=src/main/resources/db/changelog_gen.yaml
 # Diff
 referenceDriver=com.mysql.jdbc.Driver
 referenceUrl=jdbc:mysql://localhost:3306/comms_router_core
-referenceUsername=
-referencePassword=
+referenceUsername=$comms_router
+referencePassword=$comms_password
 diffChangeLogFile=src/main/resources/db/migrations/changelog-next.yaml
