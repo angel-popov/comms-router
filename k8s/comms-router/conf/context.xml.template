@@ -41,7 +41,7 @@
       username="$comms_router"
       password="$comms_password"
       driverClassName="com.mysql.jdbc.Driver"
-      url="jdbc:mysql://localhost:3306/comms_router_core?zeroDateTimeBehavior=convertToNull&amp;useLegacyDatetimeCode=false&amp;useJDBCCompliantTimezoneShift=false&amp;serverTimezone=UTC&amp;useUnicode=yes&amp;characterEncoding=UTF-8"
+      url="jdbc:mysql://$comms_router_host:3306/comms_router_core?zeroDateTimeBehavior=convertToNull&amp;useLegacyDatetimeCode=false&amp;useJDBCCompliantTimezoneShift=false&amp;serverTimezone=UTC&amp;useUnicode=yes&amp;characterEncoding=UTF-8"
       validationQuery="/* ping */"
       removeAbandonedOnBorrow="true"
       removeAbandonedOnMaintenance="true"
