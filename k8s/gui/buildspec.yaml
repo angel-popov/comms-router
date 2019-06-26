@@ -1,0 +1,37 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - REPOSITORY_URI=589536902306.dkr.ecr.us-east-2.amazonaws.com/comms-router-gui
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+
+  install:
+    runtime-versions:
+      java: node10
+
+  build:
+    commands:
+      - docker ps
+      - cd applications/gui
+      - npm install
+      - npm run-script build
+      - cp -r dist ../../k8s/gui/
+      - cd ../..
+      - docker build -t $REPOSITORY_URI:latest k8s/gui/
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+      - EKS_CLUSTERNAME=nexmo-omni-channel-ref-app
+      - EKS_CA=$(aws ssm get-parameter --name eks_ca --with-decryption | grep Value | cut -d\" -f4)
+      - EKS_CLUSTER_NAME=nexmo-omni-channel-ref-app
+      - EKS_CLUSTER_HOST=https://6404B8490D19AE3E1774E034B5D56EE6.yl4.us-east-2.eks.amazonaws.com
+      - EKS_CLUSTER_USER_NAME=someusername
+      - TOKEN=$(aws ssm get-parameter --name eks_token --with-decryption | grep Value | cut -d\" -f4)
+      - pwd
+      - ls -l
+      - envsubst < k8s/kubeconf.conf.template > k8s/kubedeploy.conf
+      - docker run --rm --mount source=$(pwd)/k8s,destination=/k8s,type=bind wernight/kubectl delete deployment comms-router-gui --kubeconfig=/k8s/kubedeploy.conf || true
+      - docker run --rm --mount source=$(pwd)/k8s,destination=/k8s,type=bind wernight/kubectl apply -f /k8s/gui/gui-deploy.yaml --kubeconfig=/k8s/kubedeploy.conf
