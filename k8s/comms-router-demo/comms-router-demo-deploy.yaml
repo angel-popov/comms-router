@@ -18,7 +18,7 @@ spec:
     spec:
       containers:
         - name: api
-          image: 589536902306.dkr.ecr.us-east-2.amazonaws.com/comms-router-demo-app:latest
+          image: 589536902306.dkr.ecr.us-east-2.amazonaws.com/comms-router-ref-app:latest
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
           args: [ "bin/catalina.sh run" ]
