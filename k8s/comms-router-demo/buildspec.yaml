@@ -1,0 +1,38 @@
+version: 0.2
+
+phases:
+  pre_build:
+    commands:
+      - $(aws ecr get-login --region $AWS_DEFAULT_REGION --no-include-email)
+      - REPOSITORY_URI=589536902306.dkr.ecr.us-east-2.amazonaws.com/comms-router-ref-app
+      - COMMIT_HASH=$(echo $CODEBUILD_RESOLVED_SOURCE_VERSION | cut -c 1-7)
+      - IMAGE_TAG=${COMMIT_HASH:=latest}
+
+  install:
+    runtime-versions:
+      java: openjdk8
+  build:
+    commands:
+      - mvn package
+      - find . -name *.war
+      - cp applications/demo/target/demo-application*.war k8s/comms-router-demo/demo-application.war
+      - comms_router_host=nexmo-omni-channel-ref-app-test.cnpd79hzicin.us-east-2.rds.amazonaws.com
+      - comms_password=$(aws ssm get-parameter --name comms_router_pass --with-decryption | grep Value | cut -d\" -f4)
+      - comms_router=comms-router
+      - wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.zip
+      - unzip -p mysql-connector-java-5.1.46.zip mysql-connector-java-5.1.46/mysql-connector-java-5.1.46.jar > k8s/comms-router-demo/connector.jar
+      - envsubst < k8s/comms-router-demo/conf/context.xml.template > k8s/comms-router-demo/conf/context.xml
+
+      - docker build -t $REPOSITORY_URI:latest k8s/comms-router-demo/
+      - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:$IMAGE_TAG
+      - docker push $REPOSITORY_URI:latest
+      - EKS_CLUSTERNAME=nexmo-omni-channel-ref-app
+      - EKS_CA=$(aws ssm get-parameter --name eks_ca --with-decryption | grep Value | cut -d\" -f4)
+      - EKS_CLUSTER_NAME=nexmo-omni-channel-ref-app
+      - EKS_CLUSTER_HOST=https://6404B8490D19AE3E1774E034B5D56EE6.yl4.us-east-2.eks.amazonaws.com
+      - EKS_CLUSTER_USER_NAME=someusername
+      - TOKEN=$(aws ssm get-parameter --name eks_token --with-decryption | grep Value | cut -d\" -f4)
+      - envsubst < k8s/kubeconf.conf.template > k8s/kubedeploy.conf
+      - docker run --rm --mount source=$(pwd)/k8s,destination=/k8s,type=bind wernight/kubectl delete deployment comms-router-demo-app --kubeconfig=/k8s/kubedeploy.conf || true
+      - docker run --rm --mount source=$(pwd)/k8s,destination=/k8s,type=bind wernight/kubectl apply -f /k8s/comms-router-demo/comms-router-demo-deploy.yaml --kubeconfig=/k8s/kubedeploy.conf
