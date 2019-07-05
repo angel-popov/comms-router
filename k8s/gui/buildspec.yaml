@@ -16,6 +16,7 @@ phases:
     commands:
       - docker ps
       - cd applications/gui
+      - sed -i s~comms-router-gui~cs/app~ config/index.js
       - npm install
       - npm run-script build
       - cp -r dist ../../k8s/gui/
