@@ -21,4 +21,4 @@ spec:
           image: 589536902306.dkr.ecr.us-east-2.amazonaws.com/comms-router-api:latest
           imagePullPolicy: Always
           command: [ "/bin/bash", "-c", "--" ]
-          args: [ "bin/catalina.sh run" ]
+          args: [ "while true ; do bin/catalina.sh run; sleep 3 ; done" ]

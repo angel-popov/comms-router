@@ -14,7 +14,6 @@ phases:
   build:
     commands:
       - mvn package
-      - find . -name *.war
       - cp applications/demo/target/demo-application*.war k8s/comms-router-demo/demo-application.war
       - comms_router_host=nexmo-omni-channel-ref-app-test.cnpd79hzicin.us-east-2.rds.amazonaws.com
       - comms_password=$(aws ssm get-parameter --name comms_router_pass --with-decryption | grep Value | cut -d\" -f4)
