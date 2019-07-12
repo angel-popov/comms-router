@@ -7,4 +7,4 @@ COPY conf/shiro.ini conf/shiro.ini
 COPY conf/no-auth.properties conf/application.properties
 COPY *.jar lib/
 
-COPY comms-router-web.war webapps/comms-router-web.war
+COPY comms-router-web.war webapps/cr.war
