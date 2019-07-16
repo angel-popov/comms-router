@@ -7,4 +7,4 @@ COPY conf/shiro.ini conf/shiro.ini
 COPY conf/no-auth.properties conf/application.properties
 COPY *.jar lib/
 
-COPY demo-application.war webapps/cr/demo.war
+COPY demo-application.war webapps/cr\#demo.war
