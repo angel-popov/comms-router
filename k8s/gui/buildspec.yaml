@@ -14,11 +14,15 @@ phases:
 
   build:
     commands:
-      - docker ps
       - cd applications/gui
-      - sed -i s~comms-router-gui~cs/app~ config/index.js
+      - sed -i s~comms-router-gui~cr/app~ config/index.js
+      - sed -i s~/comms-router-web/api~/cr/api~ client/api/api-client.js
+      - sed -i s~/comms-router-web/log~/cr/log~ client/api/auth.js
+      - sed -i s~removeCookie..JSESSIONID.,\ ./comms-router-web..~removeCookie\(\'JSESSIONID\',\ \'/cr/demo\'\)~ client/api/auth.js
       - npm install
       - npm run-script build
+      - ls ../.. -l
+      - ls ../../k8s -l
       - cp -r dist ../../k8s/gui/
       - cd ../..
       - docker build -t $REPOSITORY_URI:latest k8s/gui/
