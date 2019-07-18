@@ -1,1 +1,1 @@
-export CATALINA_OPTS="$CATALINA_OPTS -Dhibernate.dialect=org.hibernate.dialect.MySQL57Dialect"
+export CATALINA_OPTS="$CATALINA_OPTS -Dhibernate.dialect=org.hibernate.dialect.MySQL57Dialect -Dcomms.demo.app.config.path=/usr/local/tomcat/conf"
