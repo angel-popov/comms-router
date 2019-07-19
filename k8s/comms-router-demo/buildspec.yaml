@@ -21,7 +21,7 @@ phases:
       - wget https://dev.mysql.com/get/Downloads/Connector-J/mysql-connector-java-5.1.46.zip
       - unzip -p mysql-connector-java-5.1.46.zip mysql-connector-java-5.1.46/mysql-connector-java-5.1.46.jar > k8s/comms-router-demo/connector.jar
       - envsubst < k8s/comms-router-demo/conf/context.xml.template > k8s/comms-router-demo/conf/context.xml
-      - echo -e $(aws ssm get-parameter --name comms_router_nexmo_key --with-decryption | grep Value | cut -d\" -f4) > k8s/comms-router-demo/conf/private.key
+      - echo $(aws ssm get-parameter --name comms_router_nexmo_key --with-decryption | grep Value | cut -d\" -f4) > k8s/comms-router-demo/conf/private.key
 
       - docker build -t $REPOSITORY_URI:latest k8s/comms-router-demo/
       - docker tag $REPOSITORY_URI:latest $REPOSITORY_URI:$IMAGE_TAG
